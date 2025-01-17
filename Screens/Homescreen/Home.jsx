@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ const Home = () => {
   const [location, setLocation] = useState("Accra, Ghana");
   const [favorites, setFavorites] = useState({});
   const navigation = useNavigation();
+  const scrollViewRef = useRef(null);
 
   const recommendedItems = [
     {
@@ -74,6 +75,24 @@ const Home = () => {
       price: "$9.99",
       nutrition: { kcal: 120, proteins: 5, carbo: 10, fats: 2 },
     },
+    {
+      id: 7,
+      name: "Salad",
+      image: require("../../assets/b8.png"),
+      description:
+        "A refreshing and healthy dish made with a variety of fresh vegetables, greens, and often complemented with fruits, nuts, seeds, or protein like chicken or tofu.",
+      price: "$9.99",
+      nutrition: { kcal: 120, proteins: 5, carbo: 10, fats: 2 },
+    },
+    {
+      id: 8,
+      name: "Golden Cheese Burger",
+      image: require("../../assets/b3.png"),
+      description:
+        "A cheese burger is a classic sandwich made with a juicy grilled or pan-seared beef patty, topped with a slice of melted cheese. It is typically served on a toasted bun and often includes additional toppings such as lettuce, tomatoes, onions, pickles, and condiments like ketchup, mustard, or mayonnaise.",
+      price: "$12.99",
+      nutrition: { kcal: 350, proteins: 25, carbo: 30, fats: 15 },
+    },
   ];
 
   const toggleFavorite = (id) => {
@@ -82,6 +101,18 @@ const Home = () => {
       [id]: !prevFavorites[id],
     }));
   };
+
+  // Auto-scroll function
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (scrollViewRef.current) {
+        scrollViewRef.current.scrollTo({ x: width, animated: true }); // Scroll 1 screen width to the right
+      }
+    }, 2000); // Every 2 seconds
+
+    // Clean up interval on unmount
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <SafeAreaView
@@ -181,228 +212,234 @@ const Home = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Section with Background Image */}
-      <View
-        style={{
-          height: "25%",
-          width: "95%",
-          borderRadius: 30,
-          overflow: "hidden",
-        }}
+      {/* Scrollable Content */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
       >
-        <ImageBackground
-          source={require("../../assets/b1.jpg")}
+        {/* Section with Background Image */}
+        <View
           style={{
-            flex: 1,
-            justifyContent: "flex-start",
-            paddingTop: 10,
+            height: "20%",
+            width: "95%",
+            borderRadius: 30,
+            overflow: "hidden",
           }}
         >
-          <View style={{ padding: 20 }}>
-            <Text
-              style={{
-                color: "white",
-                fontSize: 25,
-                fontWeight: "bold",
-                textAlign: "left",
-              }}
-            >
-              Free Delivery For
-            </Text>
-            <Text
-              style={{
-                color: "white",
-                fontSize: 25,
-                fontWeight: "bold",
-                textAlign: "left",
-              }}
-            >
-              Spaghetti
-            </Text>
-            <Text
-              style={{
-                color: "white",
-                fontSize: 12,
-                textAlign: "left",
-              }}
-            >
-              Up to 3 times per day
-            </Text>
-            <TouchableOpacity
-              style={{
-                backgroundColor: "#add624",
-                paddingVertical: 8,
-                paddingHorizontal: 16,
-                borderRadius: 20,
-                marginTop: 20,
-                alignItems: "center",
-                width: 120,
-              }}
-              onPress={() => console.log("Order Now pressed")}
-            >
-              <Text style={{ color: "black", fontSize: 16, fontWeight: "bold" }}>
-                Order Now
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ImageBackground>
-      </View>
-
-      {/* Horizontal ScrollView */}
-      <View style={{ height: 140, marginTop: 20 }}>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {[
-            { name: "Burger", image: require("../../assets/b3.png") },
-            { name: "Chicken", image: require("../../assets/b5.png") },
-            { name: "Fries", image: require("../../assets/b2.png") },
-            { name: "Drink", image: require("../../assets/b4.png") },
-          ].map((item, index) => (
-            <TouchableOpacity key={index}>
-              <View
+          <ImageBackground
+            source={require("../../assets/b1.jpg")}
+            style={{
+              flex: 1,
+              justifyContent: "flex-start",
+              paddingTop: 10,
+            }}
+          >
+            <View style={{ padding: 20 }}>
+              <Text
                 style={{
-                  width: 150,
-                  height: 140,
-                  backgroundColor: "#fefffc",
-                  marginRight: 10,
-                  borderRadius: 30,
-                  alignItems: "center",
-                  justifyContent: "center",
+                  color: "white",
+                  fontSize: 25,
+                  fontWeight: "bold",
+                  textAlign: "left",
                 }}
               >
+                Free Delivery For
+              </Text>
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 25,
+                  fontWeight: "bold",
+                  textAlign: "left",
+                }}
+              >
+                Spaghetti
+              </Text>
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 12,
+                  textAlign: "left",
+                }}
+              >
+                Up to 3 times per day
+              </Text>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#add624",
+                  paddingVertical: 8,
+                  paddingHorizontal: 16,
+                  borderRadius: 20,
+                  marginTop: 20,
+                  alignItems: "center",
+                  width: 120,
+                }}
+                onPress={() => console.log("Order Now pressed")}
+              >
+                <Text style={{ color: "black", fontSize: 16, fontWeight: "bold" }}>
+                  Order Now
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ImageBackground>
+        </View>
+
+        {/* Horizontal ScrollView */}
+        <View style={{ height: 140, marginTop: 20 }}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            {[
+              { name: "Burger", image: require("../../assets/b3.png") },
+              { name: "Chicken", image: require("../../assets/b5.png") },
+              { name: "Fries", image: require("../../assets/b2.png") },
+              { name: "Drink", image: require("../../assets/b4.png") },
+            ].map((item, index) => (
+              <TouchableOpacity key={index}>
+                <View
+                  style={{
+                    width: 150,
+                    height: 140,
+                    backgroundColor: "#fefffc",
+                    marginRight: 10,
+                    borderRadius: 30,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Image
+                    source={item.image}
+                    style={{ width: 100, height: 100, borderRadius: 10 }}
+                  />
+                  <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Recommended for You */}
+        <View
+          style={{
+            width: "100%",
+            marginTop: 20,
+            marginBottom: 10,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            paddingHorizontal: width * 0.02,
+          }}
+        >
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+            Recommended for you
+          </Text>
+          <TouchableOpacity>
+            <Text>See more</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Recommended Items */}
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            paddingHorizontal: width * 0.02,
+            marginBottom: 100,
+          }}
+        >
+          {recommendedItems.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              style={{
+                width: "48%",
+                marginBottom: 15,
+                position: "relative",
+              }}
+              onPress={() => navigation.navigate("Details", { item })}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  height: 200,
+                  backgroundColor: "#fefffc",
+                  borderRadius: 20,
+                  padding: 10,
+                  justifyContent: "space-between",
+                  position: "relative",
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    position: "absolute",
+                    top: 10,
+                    right: 10,
+                    zIndex: 1,
+                  }}
+                  onPress={() => toggleFavorite(item.id)}
+                >
+                  <AntDesign
+                    name={favorites[item.id] ? "heart" : "hearto"}
+                    size={20}
+                    color={favorites[item.id] ? "red" : "black"}
+                  />
+                </TouchableOpacity>
+
                 <Image
                   source={item.image}
-                  style={{ width: 100, height: 100, borderRadius: 10 }}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 10,
+                    alignSelf: "center",
+                  }}
                 />
-                <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    marginTop: 5,
+                  }}
+                >
+                  {item.name}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    textAlign: "center",
+                    marginTop: 5,
+                  }}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {item.description}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginTop: 10,
+                  }}
+                >
+                  <Text style={{ color: "black", fontSize: 20 }}>
+                    {item.price}
+                  </Text>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: "#add624",
+                        paddingVertical: 5,
+                        paddingHorizontal: 10,
+                        borderRadius: 10,
+                      }}
+                    >
+                      <Text style={{ color: "white", fontSize: 14 }}>+</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
             </TouchableOpacity>
           ))}
-        </ScrollView>
-      </View>
-
-      {/* Recommended for You */}
-      <View
-        style={{
-          width: "100%",
-          marginTop: 20,
-          marginBottom: 10,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingHorizontal: width * 0.02,
-        }}
-      >
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-          Recommended for you
-        </Text>
-        <TouchableOpacity>
-          <Text>See more</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Vertical ScrollView Section */}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          paddingHorizontal: width * 0.02,
-          marginBottom: 100,
-        }}
-      >
-        {recommendedItems.map((item) => (
-          <TouchableOpacity
-            key={item.id}
-            style={{
-              width: "48%",
-              marginBottom: 15,
-              position: "relative",
-            }}
-            onPress={() => navigation.navigate("Details", { item })}
-          >
-            <View
-              style={{
-                width: "100%",
-                height: 200,
-                backgroundColor: "#fefffc",
-                borderRadius: 20,
-                padding: 10,
-                justifyContent: "space-between",
-                position: "relative",
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  position: "absolute",
-                  top: 10,
-                  right: 10,
-                  zIndex: 1,
-                }}
-                onPress={() => toggleFavorite(item.id)}
-              >
-                <AntDesign
-                  name={favorites[item.id] ? "heart" : "hearto"}
-                  size={20}
-                  color={favorites[item.id] ? "red" : "black"}
-                />
-              </TouchableOpacity>
-
-              <Image
-                source={item.image}
-                style={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: 10,
-                  alignSelf: "center",
-                }}
-              />
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  marginTop: 5,
-                }}
-              >
-                {item.name}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 12,
-                  textAlign: "center",
-                  marginTop: 5,
-                }}
-                numberOfLines={1} // Show only one line
-                ellipsizeMode="tail" // Add ellipsis if text overflows
-              >
-                {item.description}
-              </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginTop: 10,
-                }}
-              >
-                <Text style={{ color: "black", fontSize: 20 }}>
-                  {item.price}
-                </Text>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: "#add624",
-                      paddingVertical: 5,
-                      paddingHorizontal: 10,
-                      borderRadius: 10,
-                    }}
-                  >
-                    <Text style={{ color: "white", fontSize: 14 }}>+</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))}
+        </View>
       </ScrollView>
 
       {/* Bottom Navigation Bar */}

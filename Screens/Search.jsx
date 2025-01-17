@@ -3,7 +3,7 @@ import { View, Text, TextInput, FlatList, TouchableOpacity, Dimensions, SafeArea
 
 const { width, height } = Dimensions.get("window");
 
-const Search = ({ route }) => {
+const Search = ({ route, navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { items } = route.params;
@@ -69,7 +69,7 @@ const Search = ({ route }) => {
               alignItems: "center", // Centers the items vertically
               marginHorizontal: width * 0.02, // Added margin to the sides for each item
             }}
-            onPress={() => console.log(`${item.name} pressed`)}
+            onPress={() => navigation.navigate("Details", { item })}
           >
             {/* Image on the left */}
             <Image
