@@ -39,7 +39,7 @@ const Details = ({ route, navigation }) => {
         }}
       >
         {/* Search Icon with Circular Background */}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <View
             style={{
               width: 40,
@@ -54,6 +54,7 @@ const Details = ({ route, navigation }) => {
               shadowOffset: { width: 0, height: 2 },
               elevation: 2,
             }}
+            
           >
             <FontAwesome6 name="less-than" size={15} color="black" />
           </View>
@@ -99,7 +100,8 @@ const Details = ({ route, navigation }) => {
         style={{
           flex: 1,
           backgroundColor: "#f9f9f9",
-          padding: 20,
+          padding: 10,
+          paddingTop: 5
         }}
       >
         {/* Item Details */}
@@ -249,7 +251,7 @@ const Details = ({ route, navigation }) => {
             height: 60,
             marginTop: 10,
           }}
-          onPress={() => console.log("Order Now pressed")}
+          onPress={() => navigation.navigate("Delivery")}
         >
           <Text style={{ color: "black", fontSize: 16, fontWeight: "bold" }}>
             Order Now

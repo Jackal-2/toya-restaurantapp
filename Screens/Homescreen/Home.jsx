@@ -23,57 +23,63 @@ const Home = () => {
     {
       id: 1,
       name: "Golden Cheese Burger",
-      image: require("../assets/b3.png"),
-      description: "A cheese burger is a classic sandwich made with a juicy grilled or pan-seared beef patty, topped with a slice of melted cheese. It is typically served on a toasted bun and often includes additional toppings such as lettuce, tomatoes, onions, pickles, and condiments like ketchup, mustard, or mayonnaise. Some variations may include bacon, mushrooms, or special sauces for added flavor. The cheese enhances the savory richness of the burger, making it a popular comfort food enjoyed worldwide.",
+      image: require("../../assets/b3.png"),
+      description:
+        "A cheese burger is a classic sandwich made with a juicy grilled or pan-seared beef patty, topped with a slice of melted cheese. It is typically served on a toasted bun and often includes additional toppings such as lettuce, tomatoes, onions, pickles, and condiments like ketchup, mustard, or mayonnaise.",
       price: "$12.99",
       nutrition: { kcal: 350, proteins: 25, carbo: 30, fats: 15 },
     },
     {
       id: 2,
       name: "Lemon Pepper Chicken",
-      image: require("../assets/b5.png"),
-      description: "Lemon Pepper Chicken is a flavorful dish made with tender chicken seasoned with a zesty blend of lemon juice, freshly cracked pepper, and aromatic herbs. Often pan-seared or baked, the chicken is infused with a tangy citrus kick and a hint of spice, making it a refreshing and savory meal. Perfect for pairing with rice, vegetables, or salads, it’s a versatile and healthy option for any occasion.",
+      image: require("../../assets/b5.png"),
+      description:
+        "Lemon Pepper Chicken is a flavorful dish made with tender chicken seasoned with a zesty blend of lemon juice, freshly cracked pepper, and aromatic herbs. Often pan-seared or baked, the chicken is infused with a tangy citrus kick and a hint of spice.",
       price: "$19.99",
       nutrition: { kcal: 450, proteins: 35, carbo: 5, fats: 20 },
     },
     {
       id: 3,
       name: "Blueberry Ice Cream",
-      image: require("../assets/b6.png"),
-      description: "A creamy dessert that blends the sweet and slightly tart flavor of blueberries into a rich, smooth base. Its vibrant purple hue and refreshing taste make it a delightful treat, especially during warm weather. Enjoy it on its own or paired with complementary desserts like lemon cake.",
+      image: require("../../assets/b6.png"),
+      description:
+        "A creamy dessert that blends the sweet and slightly tart flavor of blueberries into a rich, smooth base. Its vibrant purple hue and refreshing taste make it a delightful treat, especially during warm weather.",
       price: "$5.49",
       nutrition: { kcal: 200, proteins: 3, carbo: 25, fats: 10 },
     },
     {
       id: 4,
       name: "Coca-Cola",
-      image: require("../assets/b4.png"),
-      description: "A timeless, effervescent soft drink with a signature balance of sweetness, zest, and refreshing carbonation. This iconic beverage features a unique blend of caramel, vanilla, and citrus undertones, making it the ideal accompaniment to any dish. Perfectly chilled, Coca-Cola offers an unparalleled, crisp taste that has delighted generations, making it a must-have for any dining experience. Whether you’re enjoying a casual meal or a special occasion, it’s the perfect choice for quenching your thirst and elevating the moment.",
+      image: require("../../assets/b4.png"),
+      description:
+        "A timeless, effervescent soft drink with a signature balance of sweetness, zest, and refreshing carbonation. This iconic beverage features a unique blend of caramel, vanilla, and citrus undertones.",
       price: "$4.99",
       nutrition: { kcal: 150, proteins: 2, carbo: 35, fats: 0 },
     },
     {
       id: 5,
       name: "Pizza",
-      image: require("../assets/b7.png"),
-      description: "A delicious and versatile dish featuring a crispy, golden crust topped with a rich tomato sauce, melted cheese, and a variety of fresh toppings like vegetables, meats, and herbs. Whether classic Margherita or loaded with your favorite ingredients, pizza is a crowd-pleaser that combines savory flavors in every bite. Perfect for any occasion, it's a comforting and satisfying meal that can be customized to suit every taste.",
+      image: require("../../assets/b7.png"),
+      description:
+        "A delicious and versatile dish featuring a crispy, golden crust topped with a rich tomato sauce, melted cheese, and a variety of fresh toppings like vegetables, meats, and herbs.",
       price: "$15.99",
       nutrition: { kcal: 300, proteins: 12, carbo: 40, fats: 10 },
     },
     {
       id: 6,
       name: "Salad",
-      image: require("../assets/b8.png"),
-      description: "A refreshing and healthy dish made with a variety of fresh vegetables, greens, and often complemented with fruits, nuts, seeds, or protein like chicken or tofu. Dressed with a flavorful vinaigrette or creamy dressing, salads are light yet nutritious, offering a satisfying mix of textures and vibrant flavors. Ideal as a side or main dish, salads are versatile and can be easily customized to suit any dietary preference.",
+      image: require("../../assets/b8.png"),
+      description:
+        "A refreshing and healthy dish made with a variety of fresh vegetables, greens, and often complemented with fruits, nuts, seeds, or protein like chicken or tofu.",
       price: "$9.99",
       nutrition: { kcal: 120, proteins: 5, carbo: 10, fats: 2 },
     },
   ];
 
   const toggleFavorite = (id) => {
-    setFavorites((prev) => ({
-      ...prev,
-      [id]: !prev[id],
+    setFavorites((prevFavorites) => ({
+      ...prevFavorites,
+      [id]: !prevFavorites[id],
     }));
   };
 
@@ -99,7 +105,7 @@ const Home = () => {
         }}
       >
         {/* Search Icon with Circular Background */}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Search", { items: recommendedItems })}>
           <View
             style={{
               width: 40,
@@ -154,7 +160,7 @@ const Home = () => {
         </View>
 
         {/* Notification Icon with Circular Background */}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
           <View
             style={{
               width: 40,
@@ -185,7 +191,7 @@ const Home = () => {
         }}
       >
         <ImageBackground
-          source={require("../assets/b1.jpg")}
+          source={require("../../assets/b1.jpg")}
           style={{
             flex: 1,
             justifyContent: "flex-start",
@@ -246,10 +252,10 @@ const Home = () => {
       <View style={{ height: 140, marginTop: 20 }}>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {[
-            { name: "Burger", image: require("../assets/b3.png") },
-            { name: "Chicken", image: require("../assets/b5.png") },
-            { name: "Fries", image: require("../assets/b2.png") },
-            { name: "Drink", image: require("../assets/b4.png") },
+            { name: "Burger", image: require("../../assets/b3.png") },
+            { name: "Chicken", image: require("../../assets/b5.png") },
+            { name: "Fries", image: require("../../assets/b2.png") },
+            { name: "Drink", image: require("../../assets/b4.png") },
           ].map((item, index) => (
             <TouchableOpacity key={index}>
               <View
@@ -399,13 +405,14 @@ const Home = () => {
         ))}
       </ScrollView>
 
+      {/* Bottom Navigation Bar */}
       <View
         style={{
           position: "absolute",
           bottom: 8,
           left: 0,
           right: 0,
-          height: 60,
+          height: 70,
           backgroundColor: "white",
           borderTopWidth: 1,
           borderTopColor: "#ddd",
@@ -415,19 +422,19 @@ const Home = () => {
         }}
       >
         <TouchableOpacity>
-          <Ionicons name="home-outline" size={25} color="black" />
+          <Ionicons name="home-outline" size={30} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Favorites", {favorites})}>
+          <Ionicons name="heart-outline" size={30} color="black" />
         </TouchableOpacity>
         <TouchableOpacity>
-          <Ionicons name="heart-outline" size={25} color="black" />
+          <MaterialIcons name="list" size={30} color="black" />
         </TouchableOpacity>
         <TouchableOpacity>
-          <MaterialIcons name="list" size={25} color="black" />
+          <Ionicons name="bag-remove-outline" size={30} color="black" />
         </TouchableOpacity>
         <TouchableOpacity>
-          <Ionicons name="bag-remove-outline" size={25} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Ionicons name="person-outline" size={25} color="black" />
+          <Ionicons name="person-outline" size={30} color="black" />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
