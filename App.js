@@ -9,6 +9,7 @@ import Search from "./Screens/Search";
 import Notifications from "./Screens/Notifications/Notifications";
 import NotificationDetails from "./Screens/Notifications/NotificationDetails";
 import Profile from "./Screens/Tabbar/Profile";
+import Cart from "./Screens/Tabbar/Cart";
 
 
 
@@ -33,6 +34,7 @@ const App = () => {
         <Stack.Screen name="Notifications" component={Notifications} />
         <Stack.Screen name="NotificationDetails" component={NotificationDetails} />
         <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="Cart" component={Cart} />
 
 
       </Stack.Navigator>

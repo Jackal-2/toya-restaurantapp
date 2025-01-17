@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { Ionicons, MaterialIcons, Entypo, AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import TabBar from "../../components/Tabbar";
 
 const { width, height } = Dimensions.get("window");
 
@@ -442,38 +443,9 @@ const Home = () => {
         </View>
       </ScrollView>
 
-      {/* Bottom Navigation Bar */}
-      <View
-        style={{
-          position: "absolute",
-          bottom: 8,
-          left: 0,
-          right: 0,
-          height: 70,
-          backgroundColor: "white",
-          borderTopWidth: 1,
-          borderTopColor: "#ddd",
-          flexDirection: "row",
-          justifyContent: "space-around",
-          alignItems: "center",
-        }}
-      >
-        <TouchableOpacity>
-          <Ionicons name="home-outline" size={30} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Favorites", {favorites})}>
-          <Ionicons name="heart-outline" size={30} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <MaterialIcons name="list" size={30} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Ionicons name="bag-remove-outline" size={30} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-          <Ionicons name="person-outline" size={30} color="black" />
-        </TouchableOpacity>
-      </View>
+   
+      <TabBar navigation={navigation} /> 
+
     </SafeAreaView>
   );
 };
