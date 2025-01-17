@@ -1,66 +1,99 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { Ionicons, AntDesign, MaterialCommunityIcons, Feather, MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Modal, StyleSheet } from 'react-native';
+import { Ionicons, AntDesign, MaterialCommunityIcons, Feather, FontAwesome } from '@expo/vector-icons';
 
 const Profile = () => {
   const user = {
     name: "John Doe",
     phone: "+1234567890",
-    addresses: ["123 Main Street, NY", "456 Elm Street, SF"],
-    recentOrders: [
-      { id: '1', restaurant: 'Pizza Hut', date: '2025-01-12', total: '$25.00' },
-      { id: '2', restaurant: 'Sushi Place', date: '2025-01-10', total: '$40.00' },
-    ],
-    balance: '$120.50',
+    balance: "$120.50",
+  };
+
+  const [paymentMethod, setPaymentMethod] = useState({
+    type: "Cash",
+    icon: <Ionicons name="cash-outline" size={20} color="green" />,
+  });
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const paymentOptions = [
+    {
+      type: "Cash",
+      icon: <Ionicons name="cash-outline" size={20} color="green" />,
+    },
+    {
+      type: "Credit Card",
+      icon: <MaterialCommunityIcons name="credit-card-outline" size={20} color="blue" />,
+    },
+    {
+      type: "Debit Card",
+      icon: <MaterialCommunityIcons name="bank-outline" size={20} color="orange" />,
+    },
+  ];
+
+  const changePaymentMethod = (method) => {
+    setPaymentMethod(method);
+    setModalVisible(false);
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#fafafa', paddingHorizontal: 20 }}>
+    <ScrollView style={styles.container}>
       {/* Greeting Section */}
-      <View style={{ paddingVertical: 20, marginTop: 50, marginBottom: 20, }}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#333' }}>
-          Hello, {user.name.split(' ')[0]}!
-        </Text>
+      <View style={styles.greetingContainer}>
+        <Text style={styles.greetingText}>Hello, {user.name.split(" ")[0]}!</Text>
       </View>
 
       {/* Payments Section */}
-      <View style={{ justifyContent: "space-between", flexDirection: "row", marginBottom: 20 }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#444' }}>Payments</Text>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Payments</Text>
         <TouchableOpacity>
-          <Text style={{ fontSize: 15, color: '#444' }}>Edit &gt;</Text>
+          <Text style={styles.editText}>Edit &gt;</Text>
         </TouchableOpacity>
       </View>
 
       {/* Payment Methods */}
-      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
-        <TouchableOpacity>
-          <Ionicons name="cash-outline" size={20} color="green" />
-        </TouchableOpacity>
-        <View style={{ flexDirection: "column", flex: 1, paddingLeft: 10 }}>
-          <Text style={{ fontSize: 16, color: "black" }}>Cash</Text>
-          <TouchableOpacity>
-            <Text style={{ fontSize: 14, color: "green" }}>Change</Text>
+      <View style={styles.paymentContainer}>
+        {paymentMethod.icon}
+        <View style={styles.paymentDetails}>
+          <Text style={styles.paymentText}>{paymentMethod.type}</Text>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <Text style={styles.changeText}>Change</Text>
           </TouchableOpacity>
         </View>
       </View>
 
       {/* Toya Balance */}
-      <View
-        style={{
-          marginTop: 10,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 40
-        }}
-      >
+      <View style={styles.balanceContainer}>
         <AntDesign name="wallet" size={20} color="black" />
-        <View style={{ flexDirection: "row", flex: 1, paddingLeft: 10, justifyContent: "space-between" }}>
-          <Text style={{ fontSize: 16, color: "black" }}>Toya Balance</Text>
-          <Text style={{ fontSize: 16, color: "black" }}>{user.balance}</Text>
+        <View style={styles.balanceDetails}>
+          <Text style={styles.balanceText}>Toya Balance</Text>
+          <Text style={styles.balanceText}>{user.balance}</Text>
         </View>
       </View>
 
+      {/* Modal for Payment Method Selection */}
+      <Modal visible={isModalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Select Payment Method</Text>
+            {paymentOptions.map((option, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.modalOption}
+                onPress={() => changePaymentMethod(option)}
+              >
+                {option.icon}
+                <Text style={styles.modalOptionText}>{option.type}</Text>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <View style={{ justifyContent: "space-between", flexDirection: "row", marginBottom: 20 }}>
         <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#444' }}>Profile</Text>
       </View>
@@ -232,5 +265,113 @@ const Profile = () => {
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fafafa',
+    paddingHorizontal: 20,
+  },
+  greetingContainer: {
+    paddingVertical: 20,
+    marginTop: 50,
+    marginBottom: 20,
+  },
+  greetingText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  sectionHeader: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#444',
+  },
+  editText: {
+    fontSize: 15,
+    color: '#444',
+  },
+  paymentContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  paymentDetails: {
+    flexDirection: "column",
+    flex: 1,
+    paddingLeft: 10,
+  },
+  paymentText: {
+    fontSize: 16,
+    color: "black",
+  },
+  changeText: {
+    fontSize: 14,
+    color: "green",
+  },
+  balanceContainer: {
+    marginTop: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 40,
+  },
+  balanceDetails: {
+    flexDirection: "row",
+    flex: 1,
+    paddingLeft: 10,
+    justifyContent: "space-between",
+  },
+  balanceText: {
+    fontSize: 16,
+    color: "black",
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    width: '80%',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  modalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+    width: '100%',
+  },
+  modalOptionText: {
+    fontSize: 16,
+    marginLeft: 10,
+    color: '#333',
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: '#add624',
+    borderRadius: 5,
+    padding: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+});
 
 export default Profile;

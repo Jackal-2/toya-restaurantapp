@@ -156,7 +156,7 @@ const Delivery = () => {
                   color: "white",
                 }}
               >
-                Issaka Ishmael
+                Coco Pops
               </Text>
               {/* Courier Text under Name */}
               <Text

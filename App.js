@@ -8,6 +8,7 @@ import Favorites from "./Screens/Favorites";
 import Search from "./Screens/Search";
 import Notifications from "./Screens/Notifications/Notifications";
 import NotificationDetails from "./Screens/Notifications/NotificationDetails";
+import Profile from "./Screens/Tabbar/Profile";
 
 
 
@@ -31,6 +32,7 @@ const App = () => {
         <Stack.Screen name="Search" component={Search} />
         <Stack.Screen name="Notifications" component={Notifications} />
         <Stack.Screen name="NotificationDetails" component={NotificationDetails} />
+        <Stack.Screen name="Profile" component={Profile} />
 
 
       </Stack.Navigator>

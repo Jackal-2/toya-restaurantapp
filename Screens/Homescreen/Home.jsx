@@ -220,7 +220,7 @@ const Home = () => {
         {/* Section with Background Image */}
         <View
           style={{
-            height: "20%",
+            height: "18%",
             width: "95%",
             borderRadius: 30,
             overflow: "hidden",
@@ -266,17 +266,17 @@ const Home = () => {
               </Text>
               <TouchableOpacity
                 style={{
-                  backgroundColor: "#add624",
+                  backgroundColor: "#add624",    
                   paddingVertical: 8,
                   paddingHorizontal: 16,
                   borderRadius: 20,
-                  marginTop: 20,
+                  marginTop: 30,
                   alignItems: "center",
                   width: 120,
                 }}
                 onPress={() => console.log("Order Now pressed")}
               >
-                <Text style={{ color: "black", fontSize: 16, fontWeight: "bold" }}>
+                <Text style={{ color: "black", fontSize: 16, fontWeight: "bold",}}>
                   Order Now
                 </Text>
               </TouchableOpacity>
@@ -470,7 +470,7 @@ const Home = () => {
         <TouchableOpacity>
           <Ionicons name="bag-remove-outline" size={30} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
           <Ionicons name="person-outline" size={30} color="black" />
         </TouchableOpacity>
       </View>
