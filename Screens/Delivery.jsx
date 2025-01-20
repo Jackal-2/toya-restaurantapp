@@ -15,6 +15,11 @@ const { width, height } = Dimensions.get("window");
 
 const Delivery = () => {
   const navigation = useNavigation();
+  const Delivery = ({ route }) => {
+    const { cartItems } = route.params; // Get the cartItems passed from the Cart screen
+    // Now you can use cartItems in the Delivery component
+  };
+  
 
   const [courierLocation, setCourierLocation] = useState({
     latitude: 37.7749,
@@ -276,7 +281,7 @@ const Delivery = () => {
                 justifyContent: "center",
                 marginTop: 20,
               }}
-              onPress={() => console.log("View All Details Pressed")}
+              onPress={() => navigation.navigate("Order Details")}
             >
               <Text style={{ fontSize: 14, color: "black", marginRight: 5 }}>
                 View All Details

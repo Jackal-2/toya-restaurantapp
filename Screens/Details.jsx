@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { FontAwesome5, FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
@@ -38,7 +38,7 @@ const Details = ({ route, navigation }) => {
           paddingHorizontal: width * 0.03,
         }}
       >
-        {/* Search Icon with Circular Background */}
+        {/* Back Button */}
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <View
             style={{
@@ -54,7 +54,6 @@ const Details = ({ route, navigation }) => {
               shadowOffset: { width: 0, height: 2 },
               elevation: 2,
             }}
-            
           >
             <FontAwesome6 name="less-than" size={15} color="black" />
           </View>
@@ -62,10 +61,9 @@ const Details = ({ route, navigation }) => {
 
         <View style={{ alignItems: "center" }}>
           <Text style={{ fontSize: 20, color: "grey" }}>Details</Text>
-    
         </View>
 
-        {/* Notification Icon with Circular Background */}
+        {/* Location Icon */}
         <TouchableOpacity>
           <View
             style={{
@@ -101,21 +99,14 @@ const Details = ({ route, navigation }) => {
           flex: 1,
           backgroundColor: "#f9f9f9",
           padding: 10,
-          paddingTop: 5
+          paddingTop: 5,
         }}
       >
-        {/* Item Details */}
-        <Text
-          style={{
-            color: "black",
-            fontSize: 30,
-            fontWeight: "bold",
-            paddingTop: 20,
-          }}
-        >
+        <Text style={{ color: "black", fontSize: 30, fontWeight: "bold", paddingTop: 20 }}>
           {item.name}
         </Text>
 
+        {/* Item Details */}
         <View
           style={{
             flexDirection: "row",
@@ -123,84 +114,21 @@ const Details = ({ route, navigation }) => {
             alignItems: "center",
           }}
         >
-          <Ionicons
-            name="location-outline"
-            size={20}
-            color="grey"
-            style={{ marginRight: 5 }}
-          />
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "bold",
-              color: "grey",
-            }}
-          >
+          <Ionicons name="location-outline" size={20} color="grey" style={{ marginRight: 5 }} />
+          <Text style={{ fontSize: 16, fontWeight: "bold", color: "grey" }}>
             {item.location ? item.location : "Accra, Ghana"}
           </Text>
         </View>
 
-        {/* Nutrition Information */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginVertical: 20,
-            width: "100%",
-          }}
-        >
-          <View style={{ alignItems: "center", flex: 1 }}>
-            <Text style={{ fontSize: 16, fontWeight: "bold", color: "black" }}>
-              {item.nutrition.kcal}
-            </Text>
-            <Text style={{ fontSize: 14, color: "gray" }}>kcal</Text>
-          </View>
-          <View style={{ alignItems: "center", flex: 1 }}>
-            <Text style={{ fontSize: 16, fontWeight: "bold", color: "black" }}>
-              {item.nutrition.proteins}
-            </Text>
-            <Text style={{ fontSize: 14, color: "gray" }}>proteins</Text>
-          </View>
-          <View style={{ alignItems: "center", flex: 1 }}>
-            <Text style={{ fontSize: 16, fontWeight: "bold", color: "black" }}>
-              {item.nutrition.carbo}
-            </Text>
-            <Text style={{ fontSize: 14, color: "gray" }}>carbo</Text>
-          </View>
-          <View style={{ alignItems: "center", flex: 1 }}>
-            <Text style={{ fontSize: 16, fontWeight: "bold", color: "black" }}>
-              {item.nutrition.fats}
-            </Text>
-            <Text style={{ fontSize: 14, color: "gray" }}>fats</Text>
-          </View>
-        </View>
-
-        <Text style={{ color: "black", fontSize: 20, fontWeight: "bold" }}>
-          Description
-        </Text>
-
         {/* Description Section */}
-        <ScrollView
-          style={{
-            flex: 1,
-          }}
-          nestedScrollEnabled={true}
-          showsVerticalScrollIndicator={false}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              textAlign: "left",
-              color: "grey",
-            }}
-          >
+        <Text style={{ color: "black", fontSize: 20, fontWeight: "bold" }}>Description</Text>
+        <ScrollView style={{ flex: 1 }} nestedScrollEnabled={true} showsVerticalScrollIndicator={false}>
+          <Text style={{ fontSize: 18, textAlign: "left", color: "grey" }}>
             {showFullDescription ? item.description : truncatedDescription}
           </Text>
           {!showFullDescription && (
             <TouchableOpacity onPress={toggleDescription}>
-              <Text style={{ color: "black", fontSize: 16, marginTop: 5 }}>
-                See More
-              </Text>
+              <Text style={{ color: "black", fontSize: 16, marginTop: 5 }}>See More</Text>
             </TouchableOpacity>
           )}
         </ScrollView>
@@ -218,27 +146,6 @@ const Details = ({ route, navigation }) => {
           backgroundColor: "white",
         }}
       >
-        <TouchableOpacity>
-          <View
-            style={{
-              width: 60,
-              height: 60,
-              borderRadius: 30,
-              backgroundColor: "white",
-              justifyContent: "center",
-              alignItems: "center",
-              shadowColor: "#000",
-              shadowOpacity: 0.1,
-              marginTop: 10,
-              shadowRadius: 5,
-              shadowOffset: { width: 0, height: 2 },
-              elevation: 2,
-            }}
-          >
-            <Ionicons name="bag-remove-outline" size={30} color="black" />
-          </View>
-        </TouchableOpacity>
-
         <TouchableOpacity
           style={{
             backgroundColor: "#add624",
@@ -247,15 +154,13 @@ const Details = ({ route, navigation }) => {
             borderRadius: 20,
             alignItems: "center",
             justifyContent: "center",
-            width: 340,
+            width: 415,
             height: 60,
             marginTop: 10,
           }}
-          onPress={() => navigation.navigate("Delivery")}
+          onPress={() => navigation.navigate("Cart", { item: item })}
         >
-          <Text style={{ color: "black", fontSize: 16, fontWeight: "bold" }}>
-            Order Now
-          </Text>
+          <Text style={{ color: "black", fontSize: 16, fontWeight: "bold" }}>Order now</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

@@ -1,9 +1,11 @@
-// TabBar.js
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
-const TabBar = ({ navigation }) => {
+const TabBar = () => {
+  const navigation = useNavigation();
+
   return (
     <View
       style={{

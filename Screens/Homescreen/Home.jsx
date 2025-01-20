@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
 import { Ionicons, MaterialIcons, Entypo, AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import TabBar from "../../components/Tabbar";
+import { CartContext } from "../../Screens/Tabbar/CartContext";
 
 const { width, height } = Dimensions.get("window");
 
@@ -20,6 +21,12 @@ const Home = () => {
   const [favorites, setFavorites] = useState({});
   const navigation = useNavigation();
   const scrollViewRef = useRef(null);
+  const { addToCart } = useContext(CartContext);
+
+  const handleAddToCart = (item) => {
+    addToCart(item);
+  };
+  
 
   const recommendedItems = [
     {
@@ -221,7 +228,7 @@ const Home = () => {
         {/* Section with Background Image */}
         <View
           style={{
-            height: "18%",
+            height: "17%",
             width: "95%",
             borderRadius: 30,
             overflow: "hidden",
@@ -337,115 +344,70 @@ const Home = () => {
         </View>
 
         {/* Recommended Items */}
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-            paddingHorizontal: width * 0.02,
-            marginBottom: 100,
-          }}
-        >
-          {recommendedItems.map((item) => (
-            <TouchableOpacity
-              key={item.id}
+        <View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: width * 0.02, marginBottom: 100 }}>
+        {recommendedItems.map((item) => (
+          <TouchableOpacity
+            key={item.id}
+            style={{
+              width: "48%",
+              marginBottom: 15,
+              position: "relative",
+            }}
+            onPress={() => navigation.navigate("Details", { item })}
+          >
+            <View
               style={{
-                width: "48%",
-                marginBottom: 15,
+                width: "100%",
+                height: 200,
+                backgroundColor: "#fefffc",
+                borderRadius: 20,
+                padding: 10,
+                justifyContent: "space-between",
                 position: "relative",
               }}
-              onPress={() => navigation.navigate("Details", { item })}
             >
-              <View
+              {/* Heart button */}
+              <TouchableOpacity
                 style={{
-                  width: "100%",
-                  height: 200,
-                  backgroundColor: "#fefffc",
-                  borderRadius: 20,
-                  padding: 10,
-                  justifyContent: "space-between",
-                  position: "relative",
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  zIndex: 1,
                 }}
+                onPress={() => toggleFavorite(item.id)}
               >
+                <AntDesign
+                  name={favorites[item.id] ? "heart" : "hearto"}
+                  size={20}
+                  color={favorites[item.id] ? "red" : "black"}
+                />
+              </TouchableOpacity>
+
+              <Image source={item.image} style={{ width: 100, height: 100, borderRadius: 10, alignSelf: "center" }} />
+              <Text style={{ fontWeight: "bold", textAlign: "center", marginTop: 5 }}>{item.name}</Text>
+              <Text style={{ fontSize: 12, textAlign: "center", marginTop: 5 }} numberOfLines={1} ellipsizeMode="tail">{item.description}</Text>
+              <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 10 }}>
+                <Text style={{ color: "black", fontSize: 20 }}>{item.price}</Text>
                 <TouchableOpacity
                   style={{
-                    position: "absolute",
-                    top: 10,
-                    right: 10,
-                    zIndex: 1,
-                  }}
-                  onPress={() => toggleFavorite(item.id)}
-                >
-                  <AntDesign
-                    name={favorites[item.id] ? "heart" : "hearto"}
-                    size={20}
-                    color={favorites[item.id] ? "red" : "black"}
-                  />
-                </TouchableOpacity>
-
-                <Image
-                  source={item.image}
-                  style={{
-                    width: 100,
-                    height: 100,
+                    backgroundColor: "#add624",
+                    paddingVertical: 5,
+                    paddingHorizontal: 10,
                     borderRadius: 10,
-                    alignSelf: "center",
                   }}
-                />
-                <Text
-                  style={{
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    marginTop: 5,
-                  }}
+                  onPress={() => handleAddToCart(item)} // Add item to cart
                 >
-                  {item.name}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    textAlign: "center",
-                    marginTop: 5,
-                  }}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {item.description}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginTop: 10,
-                  }}
-                >
-                  <Text style={{ color: "black", fontSize: 20 }}>
-                    {item.price}
-                  </Text>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <TouchableOpacity
-                      style={{
-                        backgroundColor: "#add624",
-                        paddingVertical: 5,
-                        paddingHorizontal: 10,
-                        borderRadius: 10,
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 14 }}>+</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                  <Text style={{ color: "white", fontSize: 14 }}>+</Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-          ))}
-        </View>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
       </ScrollView>
 
-   
-      <TabBar navigation={navigation} /> 
-
+      {/* Footer */}
+      <TabBar />
     </SafeAreaView>
   );
 };
