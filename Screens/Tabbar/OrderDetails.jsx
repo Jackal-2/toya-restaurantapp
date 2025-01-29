@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } fr
 import { CartContext } from "./CartContext"
 import { ShoppingBag, Truck, CreditCard, MapPin, Clock, MessageSquare } from "lucide-react-native"
 
-const OrderSummaryPage = ({ route, navigation }) => {
+const OrderDetails = ({ route, navigation }) => {
   const { cartItems, calculateTotal } = useContext(CartContext)
 
   // Safely access route params with a default empty object
@@ -42,7 +42,7 @@ const OrderSummaryPage = ({ route, navigation }) => {
 
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <ShoppingBag color="#007AFF" size={24} />
+            <ShoppingBag color="#aad624" size={24} />
             <Text style={styles.sectionTitle}>Your Order</Text>
           </View>
           {cartItems.map(renderOrderItem)}
@@ -50,7 +50,7 @@ const OrderSummaryPage = ({ route, navigation }) => {
 
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <MessageSquare color="#007AFF" size={24} />
+            <MessageSquare color="#aad624" size={24} />
             <Text style={styles.sectionTitle}>Special Instructions</Text>
           </View>
           <Text style={styles.specialInstructions}>{specialInstructions || "No special instructions provided."}</Text>
@@ -58,7 +58,7 @@ const OrderSummaryPage = ({ route, navigation }) => {
 
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <CreditCard color="#007AFF" size={24} />
+            <CreditCard color="#aad624" size={24} />
             <Text style={styles.sectionTitle}>Payment Summary</Text>
           </View>
           <View style={styles.summaryItem}>
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   orderNumber: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#007AFF",
+    color: "gray",
   },
   orderDate: {
     fontSize: 14,
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     color: "black",
   },
   button: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#aad624",
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
@@ -206,5 +206,5 @@ const styles = StyleSheet.create({
   },
 })
 
-export default OrderSummaryPage
+export default OrderDetails
 

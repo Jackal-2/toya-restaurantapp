@@ -61,6 +61,7 @@ const Delivery = ({ route }) => {
     if (deliveryProgress < 0.25) return "Order Confirmed";
     if (deliveryProgress < 0.5) return "Preparing Your Order";
     if (deliveryProgress < 0.75) return "Order Picked Up";
+    if (deliveryProgress < 0.85) return "Order on the way!";
     return "Delivered";
   };
 
