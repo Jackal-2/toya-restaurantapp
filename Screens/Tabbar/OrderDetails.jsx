@@ -82,7 +82,7 @@ const OrderDetails = ({ route, navigation }) => {
             console.log("Tracking order")
           }}
         >
-          <Text style={styles.buttonText}>Track Order</Text>
+          <Text style={styles.buttonText}>Return</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
