@@ -1,1 +1,1 @@
-[] finish favorites screen
+[x] finish favorites screen
