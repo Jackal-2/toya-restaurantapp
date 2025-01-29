@@ -7,21 +7,25 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
+  FlatList,
 } from "react-native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useFavorites } from "./context/FavoritesContext";
 
 const { width, height } = Dimensions.get("window");
 
 const Favorites = () => {
-  const [favorites, setFavorites] = useState({
-    1: true,
-    2: false,
-    3: true,
-    4: false,
-    5: true,
-    6: false,
-  });
+  const { favorites, addToFavorites, removeFromFavorites } = useFavorites();
+
+  // const [favorites, setFavorites] = useState({
+  //   1: true,
+  //   2: false,
+  //   3: true,
+  //   4: false,
+  //   5: true,
+  //   6: false,
+  // });
 
   const recommendedItems = [
     {
@@ -112,15 +116,125 @@ const Favorites = () => {
       </View>
 
       {/* ScrollView for Favorite Items */}
-      <ScrollView
+      <View
         contentContainerStyle={{
           width: "100%",
           paddingHorizontal: width * 0.02,
           marginBottom: 100,
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
         }}
         showsVerticalScrollIndicator={false}
       >
-        {recommendedItems
+        <FlatList
+          data={favorites}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => {
+            const isFavorite = favorites.some((fav) => fav.id === item.id);
+
+            return (
+              <View
+                style={{
+                  width: "100%",
+                  height: 200,
+                  backgroundColor: "#fefffc",
+                  borderRadius: 20,
+                  padding: 10,
+                  justifyContent: "space-between",
+                  position: "relative",
+                }}
+              >
+                {/* Heart button */}
+                <TouchableOpacity
+                  style={{
+                    position: "absolute",
+                    top: 10,
+                    right: 10,
+                    zIndex: 1,
+                  }}
+                  onPress={() =>
+                    isFavorite
+                      ? removeFromFavorites(item.id)
+                      : addToFavorites(item)
+                  }
+                >
+                  <AntDesign
+                    name={
+                      favorites.some((fav) => fav.id === item.id)
+                        ? "heart"
+                        : "hearto"
+                    }
+                    size={20}
+                    color={
+                      favorites.some((fav) => fav.id === item.id)
+                        ? "red"
+                        : "black"
+                    }
+                  />
+                </TouchableOpacity>
+
+                <Image
+                  source={item.image}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 10,
+                    alignSelf: "center",
+                  }}
+                />
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    marginTop: 5,
+                  }}
+                >
+                  {item.name}
+                </Text>
+                <Text
+                  style={{ fontSize: 12, textAlign: "center", marginTop: 5 }}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {item.description}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginTop: 10,
+                  }}
+                >
+                  <Text style={{ color: "black", fontSize: 20 }}>
+                    {item.price}
+                  </Text>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: "#add624",
+                      paddingVertical: 5,
+                      paddingHorizontal: 10,
+                      borderRadius: 10,
+                    }}
+                    onPress={() => handleAddToCart(item)} // Add item to cart
+                  >
+                    <Text style={{ color: "white", fontSize: 14 }}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            );
+          }}
+        />
+      </View>
+    </SafeAreaView>
+  );
+};
+
+export default Favorites;
+
+{
+  /* {recommendedItems
           .filter((item) => favorites[item.id])
           .map((item) => (
             <TouchableOpacity
@@ -188,10 +302,5 @@ const Favorites = () => {
                 />
               </TouchableOpacity>
             </TouchableOpacity>
-          ))}
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-export default Favorites;
+          ))} */
+}
