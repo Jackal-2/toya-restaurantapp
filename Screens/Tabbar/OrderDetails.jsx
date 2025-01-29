@@ -10,7 +10,7 @@ const OrderDetails = ({ route, navigation }) => {
   const { specialInstructions = "" } = route?.params || {}
 
   const subtotal = calculateTotal()
-  const deliveryFee = 5.0
+  const deliveryFee = 20.0
   const total = subtotal + deliveryFee
 
   // Mock order details
@@ -77,10 +77,7 @@ const OrderDetails = ({ route, navigation }) => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => {
-            // Handle order tracking
-            console.log("Tracking order")
-          }}
+          onPress={() => navigation.goBack()}
         >
           <Text style={styles.buttonText}>Return</Text>
         </TouchableOpacity>
