@@ -19,38 +19,44 @@ import Phone from "./Screens/Profile/Phone";
 import Email from "./Screens/Profile/Email";
 import OrderDetails from "./Screens/Tabbar/OrderDetails";
 import { CartProvider } from "./Screens/Tabbar/CartContext"; // Import CartProvider
+import { FavoritesProvider } from "./Screens/context/FavoritesContext";
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <CartProvider>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="Home"
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Details" component={Details} />
-          <Stack.Screen name="Delivery" component={Delivery} />
-          <Stack.Screen name="Favorites" component={Favorites} />
-          <Stack.Screen name="Search" component={Search} />
-          <Stack.Screen name="Notifications" component={Notifications} />
-          <Stack.Screen name="NotificationDetails" component={NotificationDetails} />
-          <Stack.Screen name="Profile" component={Profile} />
-          <Stack.Screen name="Cart" component={Cart} />
-          <Stack.Screen name="Support" component={Support} />
-          <Stack.Screen name="About" component={About} />
-          <Stack.Screen name="Privacy" component={Privacy} />
-          <Stack.Screen name="Account" component={Account} />
-          <Stack.Screen name="Promo" component={Promo} />
-          <Stack.Screen name="Phone" component={Phone} />
-          <Stack.Screen name="Email" component={Email} />
-          <Stack.Screen name="Order Details" component={OrderDetails} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <FavoritesProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="Home"
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Details" component={Details} />
+            <Stack.Screen name="Delivery" component={Delivery} />
+            <Stack.Screen name="Favorites" component={Favorites} />
+            <Stack.Screen name="Search" component={Search} />
+            <Stack.Screen name="Notifications" component={Notifications} />
+            <Stack.Screen
+              name="NotificationDetails"
+              component={NotificationDetails}
+            />
+            <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="Cart" component={Cart} />
+            <Stack.Screen name="Support" component={Support} />
+            <Stack.Screen name="About" component={About} />
+            <Stack.Screen name="Privacy" component={Privacy} />
+            <Stack.Screen name="Account" component={Account} />
+            <Stack.Screen name="Promo" component={Promo} />
+            <Stack.Screen name="Phone" component={Phone} />
+            <Stack.Screen name="Email" component={Email} />
+            <Stack.Screen name="Order Details" component={OrderDetails} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </FavoritesProvider>
     </CartProvider>
   );
 };
