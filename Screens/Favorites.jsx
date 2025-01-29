@@ -123,7 +123,7 @@ const Favorites = () => {
           marginBottom: 100,
           flexDirection: "row",
           flexWrap: "wrap",
-          justifyContent: "space-between",
+          alignItems: "center",
         }}
         showsVerticalScrollIndicator={false}
       >
@@ -136,13 +136,12 @@ const Favorites = () => {
             return (
               <View
                 style={{
-                  width: "100%",
+                  width: "95%",
                   height: 200,
                   backgroundColor: "#fefffc",
                   borderRadius: 20,
                   padding: 10,
-                  justifyContent: "space-between",
-                  position: "relative",
+                  alignSelf: "center",
                 }}
               >
                 {/* Heart button */}
