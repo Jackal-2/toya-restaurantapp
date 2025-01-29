@@ -15,6 +15,7 @@ import {
 import { CartContext } from "./CartContext"
 import { useNavigation } from "@react-navigation/native"
 import { ShoppingCart, Minus, Plus, X, CreditCard, DollarSign, Smartphone, MessageSquare } from "lucide-react-native"
+import TabBar from "../../components/Tabbar"
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, calculateTotal } = useContext(CartContext)
@@ -186,6 +187,7 @@ const Cart = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
+      <TabBar navigation={navigation} />
     </SafeAreaView>
   )
 }
@@ -413,6 +415,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
+    marginBottom: 60
   },
   checkoutButtonText: {
     color: "#FFF",
