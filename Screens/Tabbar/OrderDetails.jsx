@@ -1,75 +1,210 @@
-import React from "react";
-import { View, Text, FlatList, TouchableOpacity, Dimensions } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import React, { useContext } from "react"
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from "react-native"
+import { CartContext } from "./CartContext"
+import { ShoppingBag, Truck, CreditCard, MapPin, Clock, MessageSquare } from "lucide-react-native"
 
-const { width, height } = Dimensions.get("window");
+const OrderSummaryPage = ({ route, navigation }) => {
+  const { cartItems, calculateTotal } = useContext(CartContext)
 
-const OrderSummary = ({ route }) => {
-  const { cartItems } = route.params; // Get cartItems passed from Cart screen
-  const navigation = useNavigation();
+  // Safely access route params with a default empty object
+  const { specialInstructions = "" } = route?.params || {}
 
-  // Calculate total price for all items in the cart
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => {
-      const price = parseFloat(item.price);
-      const quantity = parseInt(item.quantity, 10);
-      if (!isNaN(price) && !isNaN(quantity)) {
-        return total + price * quantity;
-      }
-      return total;
-    }, 0);
-  };
+  const subtotal = calculateTotal()
+  const deliveryFee = 5.0
+  const total = subtotal + deliveryFee
 
-  const total = calculateTotal();
+  // Mock order details
+  const orderNumber = "#FD-2023-06-15-001"
+  const orderDate = new Date().toLocaleDateString()
+  const estimatedDeliveryTime = "30-45 minutes"
+
+  const renderOrderItem = (item) => (
+    <View key={item.id} style={styles.orderItem}>
+      <View style={styles.itemInfo}>
+        <Text style={styles.itemName}>{item.name}</Text>
+        <Text style={styles.itemQuantity}>Qty: {item.quantity}</Text>
+      </View>
+      <Text style={styles.itemPrice}>
+        GHC {(Number.parseFloat(item.price.replace("$", "")) * item.quantity).toFixed(2)}
+      </Text>
+    </View>
+  )
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
-      <Text style={{ fontSize: 24, fontWeight: "bold", paddingTop: 50 }}>Order Summary</Text>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.title}>Order Summary</Text>
 
-      {/* Order Summary List */}
-      <FlatList
-        data={cartItems}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => {
-          const price = parseFloat(item.price);
-          const quantity = parseInt(item.quantity, 10);
-          const itemTotal = price * quantity;
-          return (
-            <View style={{ flexDirection: "row", marginVertical: 10, borderBottomWidth: 1, paddingBottom: 10 }}>
-              <View style={{ flex: 1 }}>
-                <Text>{item.name}</Text>
-                <Text>Quantity: {item.quantity}</Text>
-              </View>
-              <Text style={{ fontWeight: "bold" }}>{`GHC ${itemTotal.toFixed(2)}`}</Text>
-            </View>
-          );
-        }}
-      />
+        <View style={styles.orderInfo}>
+          <Text style={styles.orderNumber}>{orderNumber}</Text>
+          <Text style={styles.orderDate}>Order Date: {orderDate}</Text>
+        </View>
 
-      {/* Total Price */}
-      <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
-        <Text style={{ fontSize: 18, fontWeight: "bold" }}>Total:</Text>
-        <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-          {total ? `GHC ${total.toFixed(2)}` : "GHC 0.00"}
-        </Text>
-      </View>
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <ShoppingBag color="#007AFF" size={24} />
+            <Text style={styles.sectionTitle}>Your Order</Text>
+          </View>
+          {cartItems.map(renderOrderItem)}
+        </View>
 
-      {/* Proceed to Payment Button */}
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Payment")} // Navigate to payment page (can be added later)
-        style={{
-          backgroundColor: "#add624",
-          paddingVertical: 12,
-          paddingHorizontal: 20,
-          borderRadius: 20,
-          marginTop: 20,
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ color: "white", fontSize: 16, fontWeight: "bold" }}>Proceed to Payment</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <MessageSquare color="#007AFF" size={24} />
+            <Text style={styles.sectionTitle}>Special Instructions</Text>
+          </View>
+          <Text style={styles.specialInstructions}>{specialInstructions || "No special instructions provided."}</Text>
+        </View>
 
-export default OrderSummary;
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <CreditCard color="#007AFF" size={24} />
+            <Text style={styles.sectionTitle}>Payment Summary</Text>
+          </View>
+          <View style={styles.summaryItem}>
+            <Text>Subtotal</Text>
+            <Text>GHC {subtotal.toFixed(2)}</Text>
+          </View>
+          <View style={styles.summaryItem}>
+            <Text>Delivery Fee</Text>
+            <Text>GHC {deliveryFee.toFixed(2)}</Text>
+          </View>
+          <View style={[styles.summaryItem, styles.totalItem]}>
+            <Text style={styles.totalText}>Total</Text>
+            <Text style={styles.totalAmount}>GHC {total.toFixed(2)}</Text>
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            // Handle order tracking
+            console.log("Tracking order")
+          }}
+        >
+          <Text style={styles.buttonText}>Track Order</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F2F2F7",
+  },
+  scrollContent: {
+    padding: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#000",
+  },
+  orderInfo: {
+    marginBottom: 20,
+  },
+  orderNumber: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#007AFF",
+  },
+  orderDate: {
+    fontSize: 14,
+    color: "#8E8E93",
+    marginTop: 5,
+  },
+  section: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 20,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginLeft: 10,
+  },
+  restaurantName: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  orderItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E5EA",
+  },
+  itemInfo: {
+    flex: 1,
+  },
+  itemName: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  itemQuantity: {
+    fontSize: 14,
+    color: "#8E8E93",
+    marginTop: 5,
+  },
+  itemPrice: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  deliveryInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  deliveryText: {
+    fontSize: 14,
+    marginLeft: 10,
+  },
+  specialInstructions: {
+    fontSize: 14,
+    fontStyle: "italic",
+  },
+  summaryItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  totalItem: {
+    borderTopWidth: 1,
+    borderTopColor: "#E5E5EA",
+    paddingTop: 10,
+    marginTop: 10,
+  },
+  totalText: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  totalAmount: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "black",
+  },
+  button: {
+    backgroundColor: "#007AFF",
+    borderRadius: 12,
+    padding: 16,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+})
+
+export default OrderSummaryPage
+

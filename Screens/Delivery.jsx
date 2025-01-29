@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Dimensions,
   Image,
+  StyleSheet,
+  Animated,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { FontAwesome6, MaterialIcons, FontAwesome, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -13,13 +15,9 @@ import { GestureHandlerRootView, PanGestureHandler } from "react-native-gesture-
 
 const { width, height } = Dimensions.get("window");
 
-const Delivery = () => {
+const Delivery = ({ route }) => {
   const navigation = useNavigation();
-  const Delivery = ({ route }) => {
-    const { cartItems } = route.params; // Get the cartItems passed from the Cart screen
-    // Now you can use cartItems in the Delivery component
-  };
-  
+  const { cartItems } = route.params;
 
   const [courierLocation, setCourierLocation] = useState({
     latitude: 37.7749,
@@ -28,271 +26,267 @@ const Delivery = () => {
     longitudeDelta: 0.05,
   });
 
-  const [viewPosition, setViewPosition] = useState(height * 0.75); // Initial position of the sliding view
+  const [viewPosition, setViewPosition] = useState(height * 0.75);
   const [dragging, setDragging] = useState(false);
+  const [deliveryProgress, setDeliveryProgress] = useState(0);
 
-  // Function to update position based on the gesture movement
+  const progressAnimation = new Animated.Value(0);
+
+  useEffect(() => {
+    Animated.timing(progressAnimation, {
+      toValue: deliveryProgress,
+      duration: 1000,
+      useNativeDriver: false,
+    }).start();
+
+    // Simulate delivery progress
+    const interval = setInterval(() => {
+      setDeliveryProgress((prev) => {
+        const next = prev + 0.25;
+        return next > 1 ? 1 : next;
+      });
+    }, 10000); // Update every 10 seconds
+
+    return () => clearInterval(interval);
+  }, [deliveryProgress, progressAnimation]); // Added progressAnimation to dependencies
+
   const onGestureEvent = (event) => {
     const { translationY, state } = event.nativeEvent;
-
-    // Calculate new position, ensuring that the slider doesn't go too high or too low
     const newPosition = Math.max(Math.min(viewPosition + translationY, height * 0.75), height * 0.55);
-    setViewPosition(newPosition); // Update the position dynamically with the drag
+    setViewPosition(newPosition);
+    setDragging(state !== 4);
+  };
 
-    // Handle the drag state
-    if (state === 4) {
-      setDragging(false); // Gesture has ended
-    } else {
-      setDragging(true); // Dragging is active
-    }
+  const getStatusText = () => {
+    if (deliveryProgress < 0.25) return "Order Confirmed";
+    if (deliveryProgress < 0.5) return "Preparing Your Order";
+    if (deliveryProgress < 0.75) return "Order Picked Up";
+    return "Delivered";
+  };
+
+  const renderProgressIcon = (icon, index) => {
+    const isCompleted = deliveryProgress * 4 > index;
+    const iconColor = isCompleted ? "white" : "#ccc";
+    const backgroundColor = isCompleted ? "#add624" : "#f0f0f0";
+
+    return (
+      <View key={icon} style={[styles.progressIcon, { backgroundColor }]}>
+        <FontAwesome6 name={icon} size={20} color={iconColor} />
+      </View>
+    );
   };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      {/* Map Section */}
       <MapView
         style={{ flex: 1 }}
         region={courierLocation}
-        onRegionChangeComplete={(region) => setCourierLocation(region)}
-        mapType="standard" // Sets the map to a simple standard view
-        showsCompass={false} // Hides the compass for simplicity
-        showsTraffic={false} // Disables traffic display
-        showsBuildings={false} // Simplifies the map further by hiding buildings
-        showsIndoors={false} // Hides indoor maps for simplicity
+        onRegionChangeComplete={setCourierLocation}
+        mapType="standard"
+        showsCompass={false}
+        showsTraffic={false}
+        showsBuildings={false}
+        showsIndoors={false}
       >
         <Marker coordinate={courierLocation} title="Courier Location" />
       </MapView>
 
-      {/* Back Button */}
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={{
-          position: "absolute",
-          top: height * 0.06,
-          left: width * 0.05,
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          backgroundColor: "white",
-          justifyContent: "center",
-          alignItems: "center",
-          shadowColor: "#000",
-          shadowOpacity: 0.1,
-          shadowRadius: 5,
-          shadowOffset: { width: 0, height: 2 },
-          elevation: 2,
-        }}
-      >
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <FontAwesome6 name="less-than" size={15} color="black" />
       </TouchableOpacity>
 
-      {/* Location Button */}
-      <TouchableOpacity
-        style={{
-          position: "absolute",
-          top: height * 0.06,
-          right: width * 0.05,
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          backgroundColor: "white",
-          justifyContent: "center",
-          alignItems: "center",
-          shadowColor: "#000",
-          shadowOpacity: 0.1,
-          shadowRadius: 5,
-          shadowOffset: { width: 0, height: 2 },
-          elevation: 2,
-        }}
-      >
+      <TouchableOpacity style={styles.locationButton}>
         <FontAwesome6 name="location-crosshairs" size={20} color="black" />
       </TouchableOpacity>
 
-      {/* Sliding Bottom Black View */}
       <PanGestureHandler onGestureEvent={onGestureEvent}>
-        <View
-          style={{
-            position: "absolute",
-            bottom: 0,
-            height: height - viewPosition, // Dynamically adjust height based on slider position
-            width: "100%",
-            backgroundColor: "black",
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-            overflow: "hidden",
-            transition: dragging ? 'none' : 'all 0.3s ease-in-out', // Smooth transition when dragging ends
-          }}
-        >
-          {/* Slider Handle */}
-          <View
-            style={{
-              height: 5,
-              width: 50,
-              backgroundColor: "white",
-              borderRadius: 2.5,
-              alignSelf: "center",
-              marginVertical: 10,
-            }}
-          />
+        <Animated.View style={[styles.bottomSheet, { height: height - viewPosition }]}>
+          <View style={styles.handle} />
 
-          {/* Courier Details */}
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 10,
-              paddingHorizontal: 20,
-            }}
-          >
-            <Image
-              source={require("../assets/b9.png")}
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 25,
-                marginRight: 10,
-              }}
-            />
-            <View style={{ flexDirection: "column", flex: 1 }}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: "bold",
-                  color: "white",
-                }}
-              >
-                Coco Pops
-              </Text>
-              {/* Courier Text under Name */}
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: "#ccc", // Lighter color for "Courier"
-                }}
-              >
-                Courier
-              </Text>
+          <View style={styles.courierDetails}>
+            <Image source={require("../assets/b9.png")} style={styles.courierImage} />
+            <View style={styles.courierInfo}>
+              <Text style={styles.courierName}>Coco Pops</Text>
+              <Text style={styles.courierTitle}>Courier</Text>
             </View>
-
-            <TouchableOpacity
-              style={{
-                marginRight: 15,
-                backgroundColor: "white",
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <TouchableOpacity style={styles.actionButton}>
               <MaterialCommunityIcons name="message-text-outline" size={24} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                backgroundColor: "white",
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <TouchableOpacity style={styles.actionButton}>
               <Feather name="phone" size={24} color="black" />
             </TouchableOpacity>
           </View>
 
-          {/* White View Overlay */}
-          <View
-            style={{
-              backgroundColor: "white",
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              padding: 20,
-              flex: 1,
-            }}
-          >
-            {/* Estimated Delivery Time */}
-            <Text
-              style={{
-                fontSize: 20,
-                color: "black",
-                marginBottom: 5,
-                alignSelf: "center",
-              }}
-            >
-              Estimated Delivery Time is 25 mins
-            </Text>
-            <Text
-              style={{
-                fontSize: 13,
-                color: "black",
-                marginBottom: 20,
-                alignSelf: "center",
-              }}
-            >
-              Your order is already on its way to you!
-            </Text>
+          <View style={styles.contentOverlay}>
+            <Text style={styles.estimatedTime}>Estimated Delivery: 25 mins</Text>
+            <Text style={styles.statusText}>{getStatusText()}</Text>
 
-            {/* Delivery Progress */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                position: "relative",
-                marginBottom: 30,
-              }}
-            >
-              {["clipboard-list", "hourglass-half", "truck-fast", "check-circle"].map(
-                (icon, index) => (
-                  <React.Fragment key={icon}>
-                    <View
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 20,
-                        backgroundColor: "#add624",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <FontAwesome6 name={icon} size={20} color="white" />
-                    </View>
-                    {index < 3 && (
-                      <View
-                        style={{
-                          height: 1,
-                          backgroundColor: "black",
-                          flex: 1,
-                          marginHorizontal: 5,
-                        }}
-                      />
-                    )}
-                  </React.Fragment>
-                )
-              )}
+            <View style={styles.progressContainer}>
+              <Animated.View
+                style={[
+                  styles.progressBar,
+                  {
+                    width: progressAnimation.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ["0%", "100%"],
+                    }),
+                  },
+                ]}
+              />
+              {["clipboard-list", "hourglass-half", "truck-fast", "check-circle"].map(renderProgressIcon)}
             </View>
 
-            {/* "View All Details" Button */}
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                marginTop: 20,
-              }}
-              onPress={() => navigation.navigate("Order Details")}
-            >
-              <Text style={{ fontSize: 14, color: "black", marginRight: 5 }}>
-                View All Details
-              </Text>
+            <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.navigate("Order Details")}>
+              <Text style={styles.detailsButtonText}>View All Details</Text>
               <FontAwesome name="chevron-down" size={14} color="black" />
             </TouchableOpacity>
           </View>
-        </View>
+        </Animated.View>
       </PanGestureHandler>
     </GestureHandlerRootView>
   );
 };
+
+const styles = StyleSheet.create({
+  backButton: {
+    position: "absolute",
+    top: height * 0.06,
+    left: width * 0.05,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  locationButton: {
+    position: "absolute",
+    top: height * 0.06,
+    right: width * 0.05,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  bottomSheet: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    backgroundColor: "black",
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    overflow: "hidden",
+  },
+  handle: {
+    height: 5,
+    width: 50,
+    backgroundColor: "white",
+    borderRadius: 2.5,
+    alignSelf: "center",
+    marginVertical: 10,
+  },
+  courierDetails: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    paddingHorizontal: 20,
+  },
+  courierImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  courierInfo: {
+    flexDirection: "column",
+    flex: 1,
+  },
+  courierName: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
+  },
+  courierTitle: {
+    fontSize: 14,
+    color: "#ccc",
+  },
+  actionButton: {
+    marginLeft: 15,
+    backgroundColor: "white",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  contentOverlay: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    flex: 1,
+  },
+  estimatedTime: {
+    fontSize: 20,
+    color: "black",
+    marginBottom: 5,
+    alignSelf: "center",
+    fontWeight: "bold",
+  },
+  statusText: {
+    fontSize: 16,
+    color: "#add624",
+    marginBottom: 20,
+    alignSelf: "center",
+    fontWeight: "600",
+  },
+  progressContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    position: "relative",
+    marginBottom: 30,
+    height: 40,
+  },
+  progressBar: {
+    position: "absolute",
+    height: 3,
+    backgroundColor: "#add624",
+    left: 0,
+    top: 18.5,
+    zIndex: 1,
+  },
+  progressIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 2,
+  },
+  detailsButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+  detailsButtonText: {
+    fontSize: 14,
+    color: "black",
+    marginRight: 5,
+  },
+});
 
 export default Delivery;
